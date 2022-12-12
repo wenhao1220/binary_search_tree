@@ -38,7 +38,7 @@ int main(){
 			
 			//輸出圖形介面 
 			int l = 1;
-			for(j = 0; j < pow(2,layer)-1; j++){ //
+			for(j = 0; j < pow(2,layer)-1; j++){
 				if(type[j] == 'f'){
 					if(j == (int)pow(2,l-1)-1){
 						for(i = 0; i < (int)pow(2, layer-l)-1; i++)
@@ -67,10 +67,12 @@ int main(){
 				}
 			}
 			printf("\n");
-		}else if(option == 'i'){ //如果輸入i，則選擇要插入的樹 
+		}else if(option == 'i'){ //如果輸入i，則選擇要插入的node
 			printf("Please input a number you want to insert: ");
 			scanf("%d", &n);
 			i = 0;
+			
+			//往下搜尋到正確的位置 ，把新的node加入tree中 
 			do{
 				if(n < tree[i]){
 					if((i + 1) * 2 - 1 >= pow(2, layer)-1)
@@ -86,27 +88,27 @@ int main(){
 			tree[i] = n;
 			type[i] = 't';
 			
-		}else if(option == 'd'){
+		}else if(option == 'd'){ //如果輸入d，則選擇要刪除的node
 			printf("Please input a number you want to delete: ");
 			scanf("%d", &n);
 			i = 0;
 			do{
-				if(type[i] == 'f' || i >= pow(2, layer)-1){
+				if(type[i] == 'f' || i >= pow(2, layer)-1){ //如果沒有搜尋到需要刪除的值，則輸出錯誤訊息 
 					printf("Error, %d is not in this tree.\n", n);
 					break;
-				}else if(n < tree[i]){
-					i = (i + 1) * 2 - 1;
+				}else if(n < tree[i]){ //搜尋需要刪除的值 
+					i = (i + 1) * 2 - 1; 
 				}else if(n > tree[i]){
 					i = (i + 1) * 2;
-				}else if(n == tree[i]){
-					if(type[(i+1)*2-1] == 'f' && type[(i+1)*2] == 'f'){
+				}else if(n == tree[i]){ //刪除搜尋到的值 
+					if(type[(i+1)*2-1] == 'f' && type[(i+1)*2] == 'f'){ //degree為0時 
 						tree[i] = -1;
 						type[i] = 'f';
-					}else if(type[(i+1)*2-1] == 'f'){
-						deletion_right(tree, type, i, (i+1)*2);
-					}else if(type[(i+1)*2] == 'f'){
-						deletion_left(tree, type, i, (i+1)*2-1);
-					}else{
+					}else if(type[(i+1)*2-1] == 'f'){ //degree為1時 
+						deletion_right(tree, type, i, (i+1)*2); //呼叫 deletion_right函數 
+					}else if(type[(i+1)*2] == 'f'){ //degree為1時 
+						deletion_left(tree, type, i, (i+1)*2-1); //呼叫 deletion_left函數
+					}else{ //degree為2時
 						j = i;
 						i = (i+1)*2-1;
 						while(type[(i+1)*2] == 't'){
@@ -116,17 +118,17 @@ int main(){
 						type[i] = 'f';
 						
 						if(type[(i+1)*2-1] == 't')
-							deletion_left(tree, type, i, (i+1)*2-1);
+							deletion_left(tree, type, i, (i+1)*2-1); //呼叫 deletion_left函數
 					}
 					break;
 				}
 			}while(1);
-		}else if(option == 's'){
+		}else if(option == 's'){ //如果輸入d，則選擇要搜尋的node
 			printf("Please input a number you want to search: ");
 			scanf("%d", &n);
 			i = 0;
 			do{
-				if(type[i] == 'f' || i >= pow(2, layer)-1){
+				if(type[i] == 'f' || i >= pow(2, layer)-1){ //如果沒有搜尋到需要刪除的值，則輸出錯誤訊息  
 					printf("Error, %d is not in this tree.\n", n);
 					break;
 				}else if(n < tree[i]){
@@ -138,7 +140,7 @@ int main(){
 					break;
 				}
 			}while(1);
-		}else if(option == 'q'){
+		}else if(option == 'q'){ //如果輸入d，則離開程式 
 			a = 1;
 		}
 		
@@ -149,20 +151,21 @@ int main(){
 }
 
 void inorder(int tree[], char type[], int i){
-	if(type[(i+1)*2-1] == 't')
+	if(type[(i+1)*2-1] == 't') //L 
 		inorder(tree, type, (i+1)*2-1);
 		
-	printf("%d ", tree[i]);
+	printf("%d ", tree[i]); //V
 	
-	if(type[(i+1)*2] == 't')
+	if(type[(i+1)*2] == 't') //R
 		inorder(tree, type, (i+1)*2);
 }
 
-void deletion_right(int tree[], char type[], int i, int j){
+void deletion_right(int tree[], char type[], int i, int j){ //右邊的樹往左移 
 	tree[i] = tree[j];
 	type[i] = 't';
 	type[j] = 'f';
 	
+	//開始移動樹直到所有值都移完為止 
 	if(type[(j + 1) * 2 - 1] == 't'){
 		i = j - 1;
 		j = (j + 1) * 2 - 1;
@@ -175,12 +178,13 @@ void deletion_right(int tree[], char type[], int i, int j){
 	}
 }
 
-void deletion_left(int tree[], char type[], int i, int j){
+void deletion_left(int tree[], char type[], int i, int j){ //左邊的樹往右移 
 	tree[i] = tree[j];
 	type[i] = 't';
 	tree[j] = -1;
 	type[j] = 'f';
 	
+	//開始移動樹直到所有值都移完為止
 	if(type[(j + 1) * 2 - 1] == 't'){
 		i = j;
 		j = (j + 1) * 2 - 1;
