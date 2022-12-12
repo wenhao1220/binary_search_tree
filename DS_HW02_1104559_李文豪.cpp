@@ -38,7 +38,7 @@ int main(){
 			
 			//輸出圖形介面 
 			int l = 1;
-			for(j = 0; j < pow(2,layer)-1; j++){ 
+			for(j = 0; j < pow(2,layer)-1; j++){ //
 				if(type[j] == 'f'){
 					if(j == (int)pow(2,l-1)-1){
 						for(i = 0; i < (int)pow(2, layer-l)-1; i++)
