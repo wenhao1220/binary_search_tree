@@ -12,8 +12,8 @@ int main(){
 	int n, degree = 0, i, a = 0, j, layer = 1, add;
 	char option, s[100];
 	
-	printf("Please input a number: "); //輸入一個數字當作root 
-	while(scanf("%d", &n) != 1){ //若是輸入英文則重新輸入 
+	printf("Please input a number: "); //輸入一個數字當作root
+	while(scanf("%d", &n) != 1){ //若是輸入英文則重新輸入
 		scanf("%s", s);
 		printf("Please do not input an English.\n");
 		printf("Please input a number: ");
@@ -82,7 +82,11 @@ int main(){
 			printf("\n");
 		}else if(option == 'i'){ //如果輸入i，則選擇要插入的key
 			printf("Please input a number you want to insert: ");
-			scanf("%d", &n);
+			while(scanf("%d", &n) != 1){ //若是輸入英文則重新輸入
+				scanf("%s", s);
+				printf("Please do not input an English.\n");
+				printf("Please input a number you want to insert: ");
+			}
 			i = 0;
 			
 			//往下搜尋到正確的位置 ，把新的key加入tree中
@@ -122,9 +126,9 @@ int main(){
 					if(type[(i+1)*2-1] == 'f' && type[(i+1)*2] == 'f'){ //degree為0時 
 						tree[i] = -1;
 						type[i] = 'f';
-					}else if(type[(i+1)*2-1] == 'f'){ //degree為1時 
+					}else if(type[(i+1)*2-1] == 'f'){ //degree為1時 (只有右子樹) 
 						deletion_right(tree, type, i, (i+1)*2); //呼叫 deletion_right函數 
-					}else if(type[(i+1)*2] == 'f'){ //degree為1時 
+					}else if(type[(i+1)*2] == 'f'){ //degree為1時 (只有左子樹)
 						deletion_left(tree, type, i, (i+1)*2-1); //呼叫 deletion_left函數
 					}else{ //degree為2時
 						j = i;
@@ -154,7 +158,7 @@ int main(){
 				}else if(n > tree[i]){
 					i = (i + 1) * 2;
 				}else if(n == tree[i]){
-					printf("%d's index value = %d\n", n, i);
+					printf("%d's index value = %d\n", n, i+1);
 					break;
 				}
 			}while(1);
@@ -181,6 +185,7 @@ void inorder(int tree[], char type[], int i){
 void deletion_right(int tree[], char type[], int i, int j){ //右邊的樹往左移 
 	tree[i] = tree[j];
 	type[i] = 't';
+	tree[j] = -1;
 	type[j] = 'f';
 	
 	//開始移動樹直到所有值都移完為止 
@@ -189,7 +194,7 @@ void deletion_right(int tree[], char type[], int i, int j){ //右邊的樹往左移
 		j = (j + 1) * 2 - 1;
 		deletion_right(tree, type, i, j);
 	}
-	if(type[(i + 1) * 2] == 't'){ //右下往左上移 
+	if(type[(j + 1) * 2] == 't'){ //右下往左上移 
 		i = j;
 		j = (j + 1) * 2;
 		deletion_right(tree, type, i, j);
@@ -209,7 +214,7 @@ void deletion_left(int tree[], char type[], int i, int j){ //左邊的樹往右移
 		deletion_left(tree, type, i, j);
 	}
 	
-	if(type[(i + 1) * 2] == 't'){ //右下往右上移 
+	if(type[(j + 1) * 2] == 't'){ //右下往右上移 
 		i = j + 1;
 		j = (j + 1) * 2;
 		deletion_left(tree, type, i, j);
